@@ -7,39 +7,55 @@ window.onload = function() {
     highlighter = rangy.createHighlighter();
         
     highlighter.addCssClassApplier(rangy.createCssClassApplier("annotation", {
-        ignoreWhiteSpace: true,
-        elementTagName: "a",
-        elementProperties: { href: "#", onclick: onClickAnnotation }
+      ignoreWhiteSpace: true,
+      elementTagName: "a",
+      elementProperties: { href: "#", onclick: onClickAnnotation }
     }));
+    
+    function hideLookup() {
+      $('#themeLookup, #viewLookup, #tradeLookup, #allocationLookup').hide();
+    }
         
-    var data = {items: [
-      {value: "21", name: "Theme: US Economy to slow"},
-      {value: "43", name: "Theme: US Recovery slow"},
-      {value: "46", name: "View: US Economy GIS Flat 6 Months"},
-      {value: "54", name: "View: US Economy GIS Flat 3 Months"},
-      {value: "55", name: "Trade: US Technology"}
-    ]};
-        
-    $("#entityLookup").autoSuggest(data.items,
-      {
-        startText: "",
-        selectedItemProp: "name",
-        searchObjProps: "name",
-        matchCase: false,
-        neverSubmit: true,
-        selectionLimit: 1,
-        selectionAdded: function(elem) {
-          $("#sidebar").hide();
-          $(currentAnnotation).find("label.open-annotation").html($(elem).text().substr(1))
-        }
+    function bindLookup(type, items) {
+      $('#' + type + 'Button').click(function() {
+        currentAnnotation = annotateSelectedText();
+        hideLookup();
+        $('#' + type + 'Lookup').show();
+        $('.as-input').focus();
       });
-          
-    $(document).bind('keydown', 'ctrl+t', function() {
-      currentAnnotation = annotateSelectedText();
-      $(".as-close").click();
-      $("#sidebar").show();
-      $(".as-input").focus().val("Theme: ");
-    });
+      $('#' + type + 'LookupText').autoSuggest(items,
+        {
+          startText: "",
+          selectedItemProp: "name",
+          searchObjProps: "name",
+          matchCase: false,
+          neverSubmit: true,
+          selectionLimit: 1,
+          selectionAdded: function(elem) {
+            $(currentAnnotation).find("label.open-annotation").html(type + ':' + $(elem).text().substr(1))
+            $(".as-close").click();
+            hideLookup();
+          }
+        });
+    }
+    
+    bindLookup("theme", [
+      {value: "21", name: "US Economy to slow"},
+      {value: "43", name: "US Recovery slow"}
+    ]);
+
+    bindLookup("view", [
+      {value: "46", name: "US Economy GIS Flat 6 Months"},
+      {value: "54", name: "US Economy GIS Flat 3 Months"}
+    ]);
+    
+    bindLookup("trade", [
+      {value: "55", name: "US Technology"}
+    ]);
+      
+    bindLookup("allocation", [
+      {value: "55", name: "US Technology Allocation"}
+    ]);    
 };
     
 function onClickAnnotation() {
@@ -56,6 +72,5 @@ function annotateSelectedText() {
     var newHighlights = highlighter.highlightSelection("annotation");
     var anchor = newHighlights[0].range.startContainer; 
     anchor.innerHTML = "<label class='open-annotation'></label><span class='annotated-contents'>" + anchor.innerHTML + "</span><label class='close-annotation'>&nbsp;</label>";
-    //alert("Created " + newHighlights.length + " annotations");
     return anchor;
 }

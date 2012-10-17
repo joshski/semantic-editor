@@ -25,9 +25,37 @@
   </head>
   <body>
     
-    <div id="sidebar" style="display: none; position: absolute; left: 540px; width: 400px; position: fixed">
-      <label for="entityLookup">Entity:</label>
-      <input type="text" id="entityLookup"></input>
+    <div id="sidebar" style="position: absolute; left: 540px; width: 400px; position: fixed">
+
+      <div id="buttons">
+        <button id="themeButton">Theme</button>
+        <button id="viewButton">View</button>
+        <button id="tradeButton">Trade</button>
+        <button id="allocationButton">Allocation</button>
+      </div>
+      
+      <div id="themeLookup" style="display:none">
+        <label for="themeLookupText">Theme</label>
+        <input type="text" id="themeLookupText"></input>
+      </div>
+      
+        
+      <div id="viewLookup" style="display:none">
+        <label for="viewLookupText">View</label>
+        <input type="text" id="viewLookupText"></input>
+      </div>
+      
+        
+      <div id="tradeLookup" style="display:none">
+        <label for="tradeLookupText">Trade</label>
+        <input type="text" id="tradeLookupText"></input>
+      </div>
+      
+      <div id="allocationLookup" style="display:none">
+        <label for="allocationLookupText">Allocation</label>
+        <input type="text" id="allocationLookupText"></input>
+      </div>
+      
     </div>
     
     <div contenteditable="true" id="content" style="position: absolute; left: 0; width: 500px; margin: 8px; padding: 8px; border: 1px solid black">

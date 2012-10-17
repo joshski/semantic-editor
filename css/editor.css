@@ -7,29 +7,35 @@ p {
 }
     
 *.annotation {
-  background: #2989d8; /* Old browsers */
-  background: -moz-linear-gradient(top,  #2989d8 14%, #1e5799 60%, #207cca 90%, #207cca 95%, #7db9e8 100%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(14%,#2989d8), color-stop(60%,#1e5799), color-stop(90%,#207cca), color-stop(95%,#207cca), color-stop(100%,#7db9e8)); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top,  #2989d8 14%,#1e5799 60%,#207cca 90%,#207cca 95%,#7db9e8 100%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top,  #2989d8 14%,#1e5799 60%,#207cca 90%,#207cca 95%,#7db9e8 100%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top,  #2989d8 14%,#1e5799 60%,#207cca 90%,#207cca 95%,#7db9e8 100%); /* IE10+ */
-  background: linear-gradient(to bottom,  #2989d8 14%,#1e5799 60%,#207cca 90%,#207cca 95%,#7db9e8 100%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2989d8', endColorstr='#7db9e8',GradientType=0 ); /* IE6-9 */
-            
+  background: #4f85bb; /* Old browsers */
+
+  background: -moz-linear-gradient(top,  #4f85bb 0%, #4f85bb 100%); /* FF3.6+ */
+
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4f85bb), color-stop(100%,#4f85bb)); /* Chrome,Safari4+ */
+
+  background: -webkit-linear-gradient(top,  #4f85bb 0%,#4f85bb 100%); /* Chrome10+,Safari5.1+ */
+
+  background: -o-linear-gradient(top,  #4f85bb 0%,#4f85bb 100%); /* Opera 11.10+ */
+
+  background: -ms-linear-gradient(top,  #4f85bb 0%,#4f85bb 100%); /* IE10+ */
+
+  background: linear-gradient(to bottom,  #4f85bb 0%,#4f85bb 100%); /* W3C */
+
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4f85bb', endColorstr='#4f85bb',GradientType=0 ); /* IE6-9 */
+
+           
   color: black;
-  border: 2px solid #2989d8;
+  border: 2px solid #4f85bb;
   text-decoration: none;
   -moz-border-radius: 5px;
   border-radius: 5px;
-  line-height: 1em;
-  height: 1em;
 }
         
 *.annotation label {
   font-size: 0.7em;
   color: white;
   min-width: 8px;
-  text-shadow: 0 -1px 0 #000;
+  text-shadow: 0 1px 0 #000;
   line-height: 1em;
 }
 *.annotation label.open-annotation {
@@ -47,4 +53,18 @@ p {
   border-bottom: 2px solid #1e5799;
   -moz-border-radius: 5px;
   border-radius: 5px;  
+}
+
+#sidebar label {
+  display: block;
+}
+
+#sidebar div {
+  margin-bottom: 10px;
+}
+
+#sidebar button {
+  width: 80px;
+  height: 30px;
+  margin-top: 8px;
 }
