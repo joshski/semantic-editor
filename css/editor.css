@@ -1,70 +1,45 @@
-* {
-  font-family: Helvetica;
+#header { position: absolute; top: 0; right: 0; bottom: 0; left: 0; height: 30px; }
+#editor { position: absolute; top: 30px; right: 33%; bottom: 0; left: 0; }
+#panel  { position: absolute; top: 30px; right: 0; bottom: 0; width: 33%; }
+
+.ace_gutter-cell { visibility: hidden }
+
+#header {
+  background-color: #aaa;
 }
-        
-p {
-  line-height: 1.5em;
+
+#panel {
+  background-color: #eee;
+  font-family: helvetica;
+  font-size: 0.8em;
+  padding-top: 10px;
+  overflow-y: scroll;
 }
-    
-*.annotation {
-  background: #4f85bb; /* Old browsers */
 
-  background: -moz-linear-gradient(top,  #4f85bb 0%, #4f85bb 100%); /* FF3.6+ */
+#panel ul {
+  padding: 0;
+  list-style-type: none;
+}
 
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4f85bb), color-stop(100%,#4f85bb)); /* Chrome,Safari4+ */
+#panel label {
+  padding: 5px;
+}
 
-  background: -webkit-linear-gradient(top,  #4f85bb 0%,#4f85bb 100%); /* Chrome10+,Safari5.1+ */
+#panel li {
+  padding: 5px;
+  border-bottom: 1px solid #cccccc;
+}
 
-  background: -o-linear-gradient(top,  #4f85bb 0%,#4f85bb 100%); /* Opera 11.10+ */
+#panel div.text {
+  max-height: 2.4em;
+  overflow: auto;
+  color: #555;
+  font-size: 0.8em;
+  margin-top: 4px;
+}
 
-  background: -ms-linear-gradient(top,  #4f85bb 0%,#4f85bb 100%); /* IE10+ */
-
-  background: linear-gradient(to bottom,  #4f85bb 0%,#4f85bb 100%); /* W3C */
-
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4f85bb', endColorstr='#4f85bb',GradientType=0 ); /* IE6-9 */
-
-           
-  color: black;
-  border: 2px solid #4f85bb;
+#panel li a {
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
   text-decoration: none;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
-}
-        
-*.annotation label {
-  font-size: 0.7em;
-  color: white;
-  min-width: 8px;
-  text-shadow: 0 1px 0 #000;
-  line-height: 1em;
-}
-*.annotation label.open-annotation {
-  padding-left: 4px;
-  padding-right: 4px;
-  line-height: 1em;
-  height: 1em;
-}
-        
-*.annotation span {
-  padding-left: 4px;
-  padding-right: 4px;
-  background: white;
-  border-top: 2px solid #1e5799;
-  border-bottom: 2px solid #1e5799;
-  -moz-border-radius: 5px;
-  border-radius: 5px;  
-}
-
-#sidebar label {
-  display: block;
-}
-
-#sidebar div {
-  margin-bottom: 10px;
-}
-
-#sidebar button {
-  width: 80px;
-  height: 30px;
-  margin-top: 8px;
+  color: #C5060B;
 }

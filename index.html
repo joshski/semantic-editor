@@ -1,75 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" ng-app>
   <head>
-    <meta charset='utf-8'>
-    <title>Zebras</title>
-    
-    <script type="text/javascript" src="js/rangy/lib/log4javascript.js"></script>
-    <script type="text/javascript" src="js/rangy/core/core.js"></script>
-    <script type="text/javascript" src="js/rangy/core/dom.js"></script>
-    <script type="text/javascript" src="js/rangy/core/domrange.js"></script>
-    <script type="text/javascript" src="js/rangy/core/wrappedrange.js"></script>
-    <script type="text/javascript" src="js/rangy/core/wrappedselection.js"></script>
-    <script type="text/javascript" src="js/rangy/modules/rangy-serializer.js"></script>
-    <script type="text/javascript" src="js/rangy/modules/rangy-cssclassapplier.js"></script>
-    <script type="text/javascript" src="js/rangy/modules/rangy-selectionsaverestore.js"></script>
-    <script type="text/javascript" src="js/rangy/modules/rangy-highlighter.js"></script>
-    <script type="text/javascript" src="js/jquery/jquery-1.8.2.min.js"></script>
-    <script type="text/javascript" src="js/jquery/jquery.autoSuggest.js"></script>
-    <script type="text/javascript" src="js/jquery/jquery.hotkeys.js"></script>
-    <script type="text/javascript" src="js/editor.js"></script>
-
-    <link type="text/css" rel="stylesheet" href="css/autoSuggest.css"></link>
-    <link type="text/css" rel="stylesheet" href="css/editor.css"></link>
-    
+    <meta charset="UTF-8">
+    <title>Semantic Editor</title>
+    <link rel="stylesheet" href="css/editor.css"></link>
   </head>
   <body>
     
-    <div id="sidebar" style="position: absolute; left: 540px; width: 400px; position: fixed">
+    <div ng-controller="AnnotationController">
+      
+      <div id="header"></div>
+      
+      <div id="editor">{para}Macroeconomics (from Greek prefix {greek}"makros-" meaning "large"{/greek} + "economics") 
+is {branch}a branch of economics dealing with the performance, structure, behavior, and decision-making of 
+an economy as a whole, rather than individual markets{/branch}. This includes {geog}national, regional, and global 
+economies{/geog}.[1][2] With microeconomics, macroeconomics is one of the two most general fields in economics.
+Macroeconomists study aggregated indicators such as GDP, unemployment rates, and price indices to 
+understand {ann-x}how the whole economy functions{/ann-x}.{/para}
+{para}
+Macroeconomists develop models that explain the 
+relationship between such factors as {income}national income{/income}, output, consumption, unemployment, inflation, 
+savings, investment, international trade and international finance. In contrast, microeconomics is 
+primarily focused on the actions of individual agents, such as firms and consumers, and how their 
+behavior determines prices and quantities in specific markets. While macroeconomics is a broad field of 
+study, there are two areas of research that are emblematic of the discipline: the attempt to 
+understand the causes and consequences of short-run fluctuations in {income}national income{/income} (the business 
+cycle), and the attempt to understand the determinants of long-run economic growth (increases in 
+national income).{/para}
+Macroeconomic models and their forecasts are used by both governments and large corporations to assist in the development and evaluation of economic policy and business strategy.{note}[citation needed]{/note}</div>
 
-      <div id="buttons">
-        <button id="themeButton">Theme</button>
-        <button id="viewButton">View</button>
-        <button id="tradeButton">Trade</button>
-        <button id="allocationButton">Allocation</button>
+      <div id="panel">
+        <label>{{annotations.length}} annotations</label>
+        <ul id="annotations">
+          <li class="annotation" ng-repeat="annotation in annotations">
+            <a class="key" ng-click="selectAnnotation(annotation)">{{ '{' }}{{annotation.key}}{{ '}' }}</a>
+            <div class="text">{{annotation.text}}</div>
+          </li>
+        </ul>
       </div>
-      
-      <div id="themeLookup" style="display:none">
-        <label for="themeLookupText">Theme</label>
-        <input type="text" id="themeLookupText"></input>
-      </div>
-      
-        
-      <div id="viewLookup" style="display:none">
-        <label for="viewLookupText">View</label>
-        <input type="text" id="viewLookupText"></input>
-      </div>
-      
-        
-      <div id="tradeLookup" style="display:none">
-        <label for="tradeLookupText">Trade</label>
-        <input type="text" id="tradeLookupText"></input>
-      </div>
-      
-      <div id="allocationLookup" style="display:none">
-        <label for="allocationLookupText">Allocation</label>
-        <input type="text" id="allocationLookupText"></input>
-      </div>
-      
     </div>
     
-    <div contenteditable="true" id="content" style="position: absolute; left: 0; width: 500px; margin: 8px; padding: 8px; border: 1px solid black">
-      <h1>Zebras</h1>
-      <p>
-        Zebras (/ˈzɛbrə/ zeb-rə or /ˈziːbrə/ zee-brə)[1] are several species of African equids (horse family) united by their distinctive black and white stripes. Their stripes come in different patterns, unique to each individual. They are generally social animals that live in small harems to large herds. Unlike their closest relatives, horses and asses, zebras have never been truly domesticated.
-        There are three species of zebras: the plains zebra, the Grévy's zebra and the mountain zebra. The plains zebra and the mountain zebra belong to the subgenus Hippotigris, but Grevy's zebra is the sole species of subgenus Dolichohippus. The latter resembles an ass, to which it is closely related, while the former two are more horse-like. All three belong to the genus Equus, along with other living equids.
-      </p>
-      <h2>Another thing</h2>
-      <p>
-        Zebras (/ˈzɛbrə/ zeb-rə or /ˈziːbrə/ zee-brə)[1] are several species of African equids (horse family) united by their distinctive black and white stripes. Their stripes come in different patterns, unique to each individual. They are generally social animals that live in small harems to large herds. Unlike their closest relatives, horses and asses, zebras have never been truly domesticated.
-        There are three species of zebras: the plains zebra, the Grévy's zebra and the mountain zebra. The plains zebra and the mountain zebra belong to the subgenus Hippotigris, but Grevy's zebra is the sole species of subgenus Dolichohippus. The latter resembles an ass, to which it is closely related, while the former two are more horse-like. All three belong to the genus Equus, along with other living equids.
-      </p>
-    </div>
-    
+    <script src="js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/angular/angular.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/editor.js" type="text/javascript" charset="utf-8"></script>
+
   </body>
 </html>

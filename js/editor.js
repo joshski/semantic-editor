@@ -1,76 +1,73 @@
-var highlighter;
-var currentAnnotation;
-    
-window.onload = function() {
-    rangy.init();
-        
-    highlighter = rangy.createHighlighter();
-        
-    highlighter.addCssClassApplier(rangy.createCssClassApplier("annotation", {
-      ignoreWhiteSpace: true,
-      elementTagName: "a",
-      elementProperties: { href: "#", onclick: onClickAnnotation }
-    }));
-    
-    function hideLookup() {
-      $('#themeLookup, #viewLookup, #tradeLookup, #allocationLookup').hide();
-    }
-        
-    function bindLookup(type, items) {
-      $('#' + type + 'Button').click(function() {
-        currentAnnotation = annotateSelectedText();
-        hideLookup();
-        $('#' + type + 'Lookup').show();
-        $('.as-input').focus();
-      });
-      $('#' + type + 'LookupText').autoSuggest(items,
-        {
-          startText: "",
-          selectedItemProp: "name",
-          searchObjProps: "name",
-          matchCase: false,
-          neverSubmit: true,
-          selectionLimit: 1,
-          selectionAdded: function(elem) {
-            $(currentAnnotation).find("label.open-annotation").html(type + ':' + $(elem).text().substr(1))
-            $(".as-close").click();
-            hideLookup();
-          }
-        });
-    }
-    
-    bindLookup("theme", [
-      {value: "21", name: "US Economy to slow"},
-      {value: "43", name: "US Recovery slow"}
-    ]);
+var editor = ace.edit("editor");
 
-    bindLookup("view", [
-      {value: "46", name: "US Economy GIS Flat 6 Months"},
-      {value: "54", name: "US Economy GIS Flat 3 Months"}
-    ]);
-    
-    bindLookup("trade", [
-      {value: "55", name: "US Technology"}
-    ]);
-      
-    bindLookup("allocation", [
-      {value: "55", name: "US Technology Allocation"}
-    ]);    
-};
-    
-function onClickAnnotation() {
-        
-    if (window.confirm("Delete this annotation?")) {
-        $(this).html($(this).children('span').html());
-        var highlight = highlighter.getHighlightForElement(this);
-        highlighter.removeHighlights( [highlight] );
+editor.getSession().setMode("ace/mode/semarkdown");
+editor.getSession().setUseWrapMode(true);
+editor.setShowPrintMargin(false);
+editor.setHighlightActiveLine(false);
+
+
+function AnnotationController($scope) {
+  
+  $scope.annotations = [];
+  
+  function findAnnotationsIn(text) {
+    var reg = /\{[^\{\}]+\}/g,
+        matches,
+        tags = [];
+    while (matches = reg.exec(text)) {
+      tags.push({ text: matches[0], index: matches.index }); 
+    }
+    var annotations = [];
+    for (var i = 0; i < tags.length; i++) {
+      if (tags[i].text.indexOf('{/') == -1) {
+        var closingTagText = tags[i].text.replace('{', '{/');
+        for (var j = i + 1; j < tags.length; j++) {
+          if (tags[j].text == closingTagText) {
+            annotations.push({
+              key: tags[i].text.replace(/\{|\}/g, ''),
+              text: text.substring(tags[i].index, tags[j].index)
+                        .replace(reg, ' ')
+                        .replace(/\s+/g, ' ')
+                        .trim(),
+              openingTag: tags[i],
+              closingTag: tags[j]
+            });
+            break;
+          }
+        }
+      }
+    }
+    return annotations;
+  }
+  
+  function rowAndColumnForIndex(index) {
+    var lines = editor.getSession().doc.$lines;
+    var total = 0;
+    for (var row = 0; row < lines.length; row++) {
+      var lineLength = lines[row].length;
+      if (total + lineLength > index) {
+        return { row: row, column: index - total }
+      }
+      total += lineLength + 1;
     }
     return false;
-}
-
-function annotateSelectedText() {
-    var newHighlights = highlighter.highlightSelection("annotation");
-    var anchor = newHighlights[0].range.startContainer; 
-    anchor.innerHTML = "<label class='open-annotation'></label><span class='annotated-contents'>" + anchor.innerHTML + "</span><label class='close-annotation'>&nbsp;</label>";
-    return anchor;
+  }
+  
+  $scope.selectAnnotation = function(ann) {
+    editor.clearSelection();
+    var openingTagPosition = rowAndColumnForIndex(ann.openingTag.index + ann.key.length + 2);
+    var closingTagPosition = rowAndColumnForIndex(ann.closingTag.index);
+    editor.moveCursorTo(openingTagPosition.row, openingTagPosition.column);
+    editor.getSession().selection.selectTo(closingTagPosition.row, closingTagPosition.column);
+    editor.centerSelection();
+    return false;
+  }
+  
+  $scope.annotations = findAnnotationsIn(editor.getValue());
+  
+  editor.on("change", function(e) {
+    $scope.annotations = findAnnotationsIn(editor.getValue());
+    $scope.$digest();
+    return false;
+  });
 }
