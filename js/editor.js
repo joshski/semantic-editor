@@ -95,9 +95,9 @@
         $scope.selectAnnotation = function(ann) {
             var self = this;
             var openingPosition, closingPosition;
-            openingPosition = rowAndColumnFor(ann.openingTag.index + ann.text.length);
-            closingPosition = rowAndColumnFor(ann.closingTag.index);
             editor.clearSelection();
+            openingPosition = rowAndColumnFor(ann.openingTag.index + ann.key.length + 2);
+            closingPosition = rowAndColumnFor(ann.closingTag.index);
             editor.moveCursorTo(openingPosition.row, openingPosition.column);
             editor.getSession().selection.selectTo(closingPosition.row, closingPosition.column);
             editor.centerSelection();

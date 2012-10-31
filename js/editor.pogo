@@ -71,10 +71,11 @@ window.AnnotationController ($scope) =
     false
   
   $scope.select annotation (ann) =
-    opening position = row and column for (ann.opening tag.index + ann.text.length)
+    editor.clear selection()
+    
+    opening position = row and column for (ann.opening tag.index + ann.key.length + 2)
     closing position = row and column for (ann.closing tag.index)
     
-    editor.clear selection()
     editor.move cursor to (opening position.row, opening position.column)
     editor.get session().selection.select to (closing position.row, closing position.column)
     editor.center selection()
