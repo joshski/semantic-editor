@@ -1,5 +1,6 @@
 require 'rack'
 require 'capybara/cucumber'
+require 'rspec/expectations'
 
 static_root = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', '..'))
 puts static_root
