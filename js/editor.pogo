@@ -5,25 +5,33 @@ editor.get session().set use wrap mode(true)
 editor.set show print margin (false)
 editor.set highlight active line (false)
 
-reg = r/\{[^\{\}]+\}/g
+tag expression = r/\{\/?([^\{\}]+)\}/g
 
 clean (text) between (start index) and (end index) =
   console.log(start index, end index)
-  text.substring(start index, end index).replace(reg, ' ').replace(r/\s+/g, ' ').trim()
+  text.substring(start index, end index).replace(tag expression, ' ').replace(r/\s+/g, ' ').trim()
+
+find tags in (text) =
+  tags = []
+  while (matches = tag expression.exec(text))
+    tags.push {
+      text = matches.0
+      key = matches.1
+      index = matches.index
+      closing = matches.0.index of '/' == 1
+    }
+  
+  tags
 
 find annotations in (text) =
-  tags = []
-  while (matches = reg.exec(text))
-    tags.push { text = matches.0, index = matches.index }
-  
+  tags = find tags in (text)
   annotations = []
   for (i = 0, i < tags.length, i = i + 1)
-    if (tags.(i).text.index of('{/') == -1)
-      closing tag text = tags.(i).text.replace('{', '{/')
+    if (!tags.(i).closing)
       for (j = i + 1, j < tags.length, j = j + 1)
-        if (tags.(j).text == closing tag text)
+        if ((tags.(j).closing) && (tags.(j).key == tags.(i).key))
           annotations.push {
-            key = tags.(i).text.replace (r/\{|\}/g, '')
+            key = tags.(i).key
             text = clean (text) between (tags.(i).index) and (tags.(j).index)
             opening tag = tags.(i)
             closing tag = tags.(j)
@@ -31,6 +39,7 @@ find annotations in (text) =
           break
 
   annotations
+  
 
 window.AnnotationController ($scope) =
   
@@ -49,9 +58,10 @@ window.AnnotationController ($scope) =
     false
   
   $scope.select annotation (ann) =
-    editor.clear selection()
     opening position = row and column for (ann.opening tag.index + ann.key.length + 2)
     closing position = row and column for (ann.closing tag.index)
+    
+    editor.clear selection()
     editor.move cursor to (opening position.row, opening position.column)
     editor.get session().selection.select to (closing position.row, closing position.column)
     editor.center selection()
