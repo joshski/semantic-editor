@@ -8,17 +8,16 @@ editor.set highlight active line (false)
 tag expression = r/\{\/?([^\{\}]+)\}/g
 
 clean (text) between (start index) and (end index) =
-  console.log(start index, end index)
   text.substring(start index, end index).replace(tag expression, ' ').replace(r/\s+/g, ' ').trim()
 
 find tags in (text) =
   tags = []
-  while (matches = tag expression.exec(text))
+  while (match = tag expression.exec(text))
     tags.push {
-      text = matches.0
-      key = matches.1
-      index = matches.index
-      closing = matches.0.index of '/' == 1
+      text = match.0
+      key = match.1
+      index = match.index
+      closing = match.0.index of '/' == 1
     }
   
   tags
@@ -26,20 +25,27 @@ find tags in (text) =
 find annotations in (text) =
   tags = find tags in (text)
   annotations = []
-  for (i = 0, i < tags.length, i = i + 1)
-    if (!tags.(i).closing)
-      for (j = i + 1, j < tags.length, j = j + 1)
-        if ((tags.(j).closing) && (tags.(j).key == tags.(i).key))
-          annotations.push {
-            key = tags.(i).key
-            text = clean (text) between (tags.(i).index) and (tags.(j).index)
-            opening tag = tags.(i)
-            closing tag = tags.(j)
-          }
-          break
+  each opening tag in (tags) @(opening, i)
+    find closing tag after (i) in (tags) with (opening.key) @(closing)
+      annotations.push {
+        key = opening.key
+        text = clean (text) between (opening.index) and (closing.index)
+        opening tag = opening
+        closing tag = closing
+      }
 
   annotations
-  
+
+each opening tag in (tags) (found with index) =
+  for (i = 0, i < tags.length, i = i + 1)
+    if (!tags.(i).closing)
+      found with index (tags.(i), i)
+
+find closing tag after (i) in (tags) with (key) (found) =
+  for (j = i + 1, j < tags.length, j = j + 1)
+    if ((tags.(j).closing) && (tags.(j).key == key))
+      found (tags.(j))
+      break
 
 window.AnnotationController ($scope) =
   
@@ -58,7 +64,7 @@ window.AnnotationController ($scope) =
     false
   
   $scope.select annotation (ann) =
-    opening position = row and column for (ann.opening tag.index + ann.key.length + 2)
+    opening position = row and column for (ann.opening tag.index + ann.text.length)
     closing position = row and column for (ann.closing tag.index)
     
     editor.clear selection()

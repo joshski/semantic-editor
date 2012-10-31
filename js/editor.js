@@ -1,6 +1,6 @@
 ((function() {
     var self = this;
-    var tagExpression, cleanBetweenAnd, findTagsIn, findAnnotationsIn;
+    var tagExpression, cleanBetweenAnd, findTagsIn, findAnnotationsIn, eachOpeningTagIn, findClosingTagAfterInWith;
     window.editor = ace.edit("editor");
     editor.getSession().setMode("ace/mode/semarkdown");
     editor.getSession().setUseWrapMode(true);
@@ -8,42 +8,53 @@
     editor.setHighlightActiveLine(false);
     tagExpression = /\{\/?([^\{\}]+)\}/g;
     cleanBetweenAnd = function(text, startIndex, endIndex) {
-        console.log(startIndex, endIndex);
         return text.substring(startIndex, endIndex).replace(tagExpression, " ").replace(/\s+/g, " ").trim();
     };
     findTagsIn = function(text) {
-        var tags, matches;
+        var tags, match;
         tags = [];
-        while (matches = tagExpression.exec(text)) {
+        while (match = tagExpression.exec(text)) {
             tags.push({
-                text: matches[0],
-                key: matches[1],
-                index: matches.index,
-                closing: matches[0].indexOf("/") === 1
+                text: match[0],
+                key: match[1],
+                index: match.index,
+                closing: match[0].indexOf("/") === 1
             });
         }
         return tags;
     };
     findAnnotationsIn = function(text) {
-        var tags, annotations, i, j;
+        var tags, annotations;
         tags = findTagsIn(text);
         annotations = [];
+        eachOpeningTagIn(tags, function(opening, i) {
+            return findClosingTagAfterInWith(i, tags, opening.key, function(closing) {
+                return annotations.push({
+                    key: opening.key,
+                    text: cleanBetweenAnd(text, opening.index, closing.index),
+                    openingTag: opening,
+                    closingTag: closing
+                });
+            });
+        });
+        return annotations;
+    };
+    eachOpeningTagIn = function(tags, foundWithIndex) {
+        var i;
         for (i = 0; i < tags.length; i = i + 1) {
             if (!tags[i].closing) {
-                for (j = i + 1; j < tags.length; j = j + 1) {
-                    if (tags[j].closing && tags[j].key === tags[i].key) {
-                        annotations.push({
-                            key: tags[i].key,
-                            text: cleanBetweenAnd(text, tags[i].index, tags[j].index),
-                            openingTag: tags[i],
-                            closingTag: tags[j]
-                        });
-                        break;
-                    }
-                }
+                foundWithIndex(tags[i], i);
             }
         }
-        return annotations;
+    };
+    findClosingTagAfterInWith = function(i, tags, key, found) {
+        var j;
+        for (j = i + 1; j < tags.length; j = j + 1) {
+            if (tags[j].closing && tags[j].key === key) {
+                found(tags[j]);
+                break;
+            }
+        }
     };
     window.AnnotationController = function($scope) {
         var self = this;
@@ -75,7 +86,7 @@
         $scope.selectAnnotation = function(ann) {
             var self = this;
             var openingPosition, closingPosition;
-            openingPosition = rowAndColumnFor(ann.openingTag.index + ann.key.length + 2);
+            openingPosition = rowAndColumnFor(ann.openingTag.index + ann.text.length);
             closingPosition = rowAndColumnFor(ann.closingTag.index);
             editor.clearSelection();
             editor.moveCursorTo(openingPosition.row, openingPosition.column);
