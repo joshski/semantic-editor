@@ -1,6 +1,6 @@
 ((function() {
     var self = this;
-    var tagExpression, findAnnotationsIn, findTagsIn, eachOpeningTagIn, findClosingTagAfterInWith, cleanBetweenAnd;
+    var tagExpression, findAnnotationsIn, findTagsIn, eachOpeningTagIn, findClosingTagAfterInWith, cleanBetweenAnd, normaliseWhitespaceIn, removeTagsFrom;
     window.editor = ace.edit("editor");
     editor.getSession().setMode("ace/mode/semarkdown");
     editor.getSession().setUseWrapMode(true);
@@ -63,7 +63,15 @@
         }
     };
     cleanBetweenAnd = function(text, startIndex, endIndex) {
-        return text.substring(startIndex, endIndex).replace(tagExpression, " ").replace(/\s+/g, " ").trim();
+        text = text.substring(startIndex, endIndex);
+        text = removeTagsFrom(text);
+        return normaliseWhitespaceIn(text);
+    };
+    normaliseWhitespaceIn = function(text) {
+        return text.replace(/\s+/g, " ").trim();
+    };
+    removeTagsFrom = function(text) {
+        return text.replace(tagExpression, " ");
     };
     window.AnnotationController = function($scope) {
         var self = this;

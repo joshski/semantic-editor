@@ -52,8 +52,16 @@ find closing tag after (i) in (tags) with (key) (found) =
         reopenings = reopenings + 1
 
 clean (text) between (start index) and (end index) =
-  text.substring(start index, end index).replace(tag expression, ' ').replace(r/\s+/g, ' ').trim()
+  text = text.substring(start index, end index)
+  text = remove tags from (text)
+  normalise whitespace in (text)
 
+normalise whitespace in (text) =
+  text.replace(r/\s+/g, ' ').trim()
+
+remove tags from (text) =
+  text.replace(tag expression, ' ')
+  
 window.AnnotationController ($scope) =
   
   $scope.annotations = []
