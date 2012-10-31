@@ -7,21 +7,6 @@ editor.set highlight active line (false)
 
 tag expression = r/\{\/?([^\{\}]+)\}/g
 
-clean (text) between (start index) and (end index) =
-  text.substring(start index, end index).replace(tag expression, ' ').replace(r/\s+/g, ' ').trim()
-
-find tags in (text) =
-  tags = []
-  while (match = tag expression.exec(text))
-    tags.push {
-      text = match.0
-      key = match.1
-      index = match.index
-      closing = match.0.index of '/' == 1
-    }
-  
-  tags
-
 find annotations in (text) =
   tags = find tags in (text)
   annotations = []
@@ -36,6 +21,18 @@ find annotations in (text) =
 
   annotations
 
+find tags in (text) =
+  tags = []
+  while (match = tag expression.exec(text))
+    tags.push {
+      text = match.0
+      key = match.1
+      index = match.index
+      closing = match.0.index of '/' == 1
+    }
+  
+  tags
+
 each opening tag in (tags) (found with index) =
   for (i = 0, i < tags.length, i = i + 1)
     if (!tags.(i).closing)
@@ -46,6 +43,9 @@ find closing tag after (i) in (tags) with (key) (found) =
     if ((tags.(j).closing) && (tags.(j).key == key))
       found (tags.(j))
       break
+
+clean (text) between (start index) and (end index) =
+  text.substring(start index, end index).replace(tag expression, ' ').replace(r/\s+/g, ' ').trim()
 
 window.AnnotationController ($scope) =
   

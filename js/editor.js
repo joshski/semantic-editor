@@ -1,28 +1,12 @@
 ((function() {
     var self = this;
-    var tagExpression, cleanBetweenAnd, findTagsIn, findAnnotationsIn, eachOpeningTagIn, findClosingTagAfterInWith;
+    var tagExpression, findAnnotationsIn, findTagsIn, eachOpeningTagIn, findClosingTagAfterInWith, cleanBetweenAnd;
     window.editor = ace.edit("editor");
     editor.getSession().setMode("ace/mode/semarkdown");
     editor.getSession().setUseWrapMode(true);
     editor.setShowPrintMargin(false);
     editor.setHighlightActiveLine(false);
     tagExpression = /\{\/?([^\{\}]+)\}/g;
-    cleanBetweenAnd = function(text, startIndex, endIndex) {
-        return text.substring(startIndex, endIndex).replace(tagExpression, " ").replace(/\s+/g, " ").trim();
-    };
-    findTagsIn = function(text) {
-        var tags, match;
-        tags = [];
-        while (match = tagExpression.exec(text)) {
-            tags.push({
-                text: match[0],
-                key: match[1],
-                index: match.index,
-                closing: match[0].indexOf("/") === 1
-            });
-        }
-        return tags;
-    };
     findAnnotationsIn = function(text) {
         var tags, annotations;
         tags = findTagsIn(text);
@@ -38,6 +22,19 @@
             });
         });
         return annotations;
+    };
+    findTagsIn = function(text) {
+        var tags, match;
+        tags = [];
+        while (match = tagExpression.exec(text)) {
+            tags.push({
+                text: match[0],
+                key: match[1],
+                index: match.index,
+                closing: match[0].indexOf("/") === 1
+            });
+        }
+        return tags;
     };
     eachOpeningTagIn = function(tags, foundWithIndex) {
         var i;
@@ -55,6 +52,9 @@
                 break;
             }
         }
+    };
+    cleanBetweenAnd = function(text, startIndex, endIndex) {
+        return text.substring(startIndex, endIndex).replace(tagExpression, " ").replace(/\s+/g, " ").trim();
     };
     window.AnnotationController = function($scope) {
         var self = this;
