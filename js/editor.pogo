@@ -39,10 +39,17 @@ each opening tag in (tags) (found with index) =
       found with index (tags.(i), i)
 
 find closing tag after (i) in (tags) with (key) (found) =
+  reopenings = 0
   for (j = i + 1, j < tags.length, j = j + 1)
-    if ((tags.(j).closing) && (tags.(j).key == key))
-      found (tags.(j))
-      break
+    if (tags.(j).key == key)
+      if (tags.(j).closing)
+        if (reopenings == 0)
+          found (tags.(j))
+          break
+        else
+          reopenings = reopenings - 1
+      else
+        reopenings = reopenings + 1
 
 clean (text) between (start index) and (end index) =
   text.substring(start index, end index).replace(tag expression, ' ').replace(r/\s+/g, ' ').trim()

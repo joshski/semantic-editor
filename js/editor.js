@@ -45,11 +45,20 @@
         }
     };
     findClosingTagAfterInWith = function(i, tags, key, found) {
-        var j;
+        var reopenings, j;
+        reopenings = 0;
         for (j = i + 1; j < tags.length; j = j + 1) {
-            if (tags[j].closing && tags[j].key === key) {
-                found(tags[j]);
-                break;
+            if (tags[j].key === key) {
+                if (tags[j].closing) {
+                    if (reopenings === 0) {
+                        found(tags[j]);
+                        break;
+                    } else {
+                        reopenings = reopenings - 1;
+                    }
+                } else {
+                    reopenings = reopenings + 1;
+                }
             }
         }
     };

@@ -20,13 +20,12 @@ Feature: Annotation Extraction
       | foo | quick brown fox |
       | bar | quick           |
   
-  @wip
-  Scenario: Overlapping annotations with reused keys
+  Scenario: Annotation containing another with same key
     Given the following document:
       """
       {foo} The {foo} quick brown {/foo} fox {/foo}
       """
     Then the following annotations should be recongised:
       | key | text                |
-      | foo | quick brown         |
       | foo | The quick brown fox |
+      | foo | quick brown         |
